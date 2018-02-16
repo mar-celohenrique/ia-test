@@ -1,0 +1,18 @@
+spring:
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/mar-celohenrique/ia-test-repo
+server:
+  port: 8081
+eureka:
+  instance:
+    hostname: localhost
+    port: 8082
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${eureka.instance.port}/eureka/
+  server:
+    wait-time-in-ms-when-sync-empty: 3000
+
