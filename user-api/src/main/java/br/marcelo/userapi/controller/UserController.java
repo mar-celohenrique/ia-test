@@ -2,9 +2,8 @@ package br.marcelo.userapi.controller;
 
 import br.marcelo.userapi.model.User;
 import br.marcelo.userapi.repository.UserRepository;
-import br.marcelo.userapi.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +15,12 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @PostMapping("/save")
     public User save(@RequestBody User user) {
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -46,10 +49,9 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @PreAuthorize(Constants.PERMISAO_ADMIN)
     @PostMapping("/update-password/{user}")
     public User updatePassword(@PathVariable("user") User user, @RequestBody String password) {
-        user.setPassword(password);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         return userRepository.save(user);
     }
 
